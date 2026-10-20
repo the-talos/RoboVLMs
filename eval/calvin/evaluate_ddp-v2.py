@@ -40,6 +40,7 @@ import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from robovlms.utils.config_utils import load_config
+from robovlms.utils.device import default_device_type, dist_backend, set_device
 
 from model_wrapper import CustomModel
 from eval_utils import print_and_save
@@ -62,8 +63,8 @@ def make_env(dataset_path):
 
 
 def setup():
-    dist.init_process_group(backend="nccl")
-    torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+    dist.init_process_group(backend=dist_backend())
+    set_device(int(os.environ["LOCAL_RANK"]))
 
 
 def evaluate_policy(
@@ -465,7 +466,7 @@ def main():
     model = CustomModel(
         ckpt_path=ckpt_path,
         configs=configs,
-        device=torch.device("cuda"),
+        device=torch.device(default_device_type()),
         save_dir=eval_log_dir,
         raw_calvin=args.raw_calvin,
         debug=args.debug_model,

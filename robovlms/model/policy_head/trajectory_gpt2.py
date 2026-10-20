@@ -46,6 +46,8 @@ from transformers.utils import logging
 from transformers.utils.model_parallel_utils import assert_device_map, get_device_map
 from transformers.models.gpt2.configuration_gpt2 import GPT2Config
 
+from robovlms.utils.device import set_device
+
 logger = logging.get_logger(__name__)
 
 _CONFIG_FOR_DOC = "GPT2Config"
@@ -709,7 +711,7 @@ class GPT2Model(GPT2PreTrainedModel):
 
             # Model parallel
             if self.model_parallel:
-                torch.cuda.set_device(hidden_states.device)
+                set_device(hidden_states.device)
                 # Ensure layer_past is on same device as hidden_states (might not be correct)
                 if layer_past is not None:
                     layer_past = layer_past.to(hidden_states.device)

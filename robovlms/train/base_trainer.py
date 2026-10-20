@@ -364,9 +364,9 @@ class BaseTrainer(pl.LightningModule):
             # print(batch[0].keys())
             batch = batch[0]
         if isinstance(batch["rgb"], list):
-            rgb = [_.cuda() for _ in batch["rgb"]]
+            rgb = [_.to(self.device) for _ in batch["rgb"]]
         else:
-            rgb = batch["rgb"].cuda()
+            rgb = batch["rgb"].to(self.device)
             if len(rgb.shape) == 4:
                 rgb = rgb.unsqueeze(1)
             assert len(rgb.shape) == 5
@@ -384,20 +384,20 @@ class BaseTrainer(pl.LightningModule):
             # language = language.flatten(0, 1)
             # text_mask = text_mask.flatten(0, 1)
             seq_len = self.configs["window_size"]
-            language = batch["text"].cuda()
-            text_mask = batch["text_mask"].cuda()
+            language = batch["text"].to(self.device)
+            text_mask = batch["text_mask"].to(self.device)
 
         if batch.get("action", None) is not None:
-            action = batch["action"].cuda()
+            action = batch["action"].to(self.device)
         else:
             action = None
 
         attention_mask = batch.get("attention_mask", None)
         if attention_mask is not None:
-            attention_mask = batch["attention_mask"].cuda()
+            attention_mask = batch["attention_mask"].to(self.device)
 
         if self.use_hand_rgb and batch.get("hand_rgb", None) is not None:
-            hand_rgb = batch["hand_rgb"].cuda()
+            hand_rgb = batch["hand_rgb"].to(self.device)
         else:
             hand_rgb = None
 
@@ -414,15 +414,15 @@ class BaseTrainer(pl.LightningModule):
         fwd_rgb_chunck = batch.get("fwd_rgb_chunck", None)
         fwd_hand_rgb_chunck = batch.get("fwd_hand_rgb_chunck", None)
         if fwd_rgb_chunck is not None:
-            fwd_rgb_chunck = fwd_rgb_chunck.cuda()
+            fwd_rgb_chunck = fwd_rgb_chunck.to(self.device)
         if fwd_hand_rgb_chunck is not None:
-            fwd_hand_rgb_chunck = fwd_hand_rgb_chunck.cuda()
+            fwd_hand_rgb_chunck = fwd_hand_rgb_chunck.to(self.device)
 
         arm_action_chunck = None
         gripper_action_chunck = None
         action_chunck = batch.get("action_chunck", None)
         if action_chunck is not None:
-            action_chunck = action_chunck.cuda()
+            action_chunck = action_chunck.to(self.device)
             arm_action_chunck = action_chunck[..., :6]
             gripper_action_chunck = action_chunck[..., -1]
 
@@ -433,24 +433,24 @@ class BaseTrainer(pl.LightningModule):
 
         chunck_mask = batch.get("chunck_mask", None)
         if chunck_mask is not None:
-            chunck_mask = chunck_mask.cuda()
+            chunck_mask = chunck_mask.to(self.device)
 
         fwd_mask = batch.get("fwd_mask", None)
         if fwd_mask is not None:
-            fwd_mask = fwd_mask.bool().cuda()
+            fwd_mask = fwd_mask.bool().to(self.device)
 
         # data preparation for discrete action inputs and labels
         instr_and_action_ids = batch.get("instr_and_action_ids", None)
         if instr_and_action_ids is not None:
-            instr_and_action_ids = instr_and_action_ids.cuda()
+            instr_and_action_ids = instr_and_action_ids.to(self.device)
 
         instr_and_action_labels = batch.get("instr_and_action_labels", None)
         if instr_and_action_labels is not None:
-            instr_and_action_labels = instr_and_action_labels.cuda()
+            instr_and_action_labels = instr_and_action_labels.to(self.device)
 
         instr_and_action_mask = batch.get("instr_and_action_mask", None)
         if instr_and_action_mask is not None:
-            instr_and_action_mask = instr_and_action_mask.cuda()
+            instr_and_action_mask = instr_and_action_mask.to(self.device)
 
         rel_state = batch.get("rel_state", None)
         # clip_text_ids = batch.get('clip_text', None)

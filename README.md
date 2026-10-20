@@ -109,6 +109,20 @@ python eval/calvin/env_test.py
 python eval/simpler/env_test.py
 ```
 
+### How to run the same on Intel's XPU
+
+The policy inference path (`CustomModel` and `BaseTrainer.inference_step`) picks the device automatically: XPU first, then CUDA, then CPU. Skip `conda install cudatoolkit cudatoolkit-dev` and the pinned `torch==2.3.1`, and install the XPU wheels instead:
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/xpu
+pip install --no-deps -e .
+pip install "transformers==4.37.2" "numpy<2" lightning einops easydict hydra-core open_clip_torch opencv-python-headless albumentations matplotlib transforms3d flamingo-pytorch diffusers
+```
+Then use the same evaluation commands, pinning the card with `ZE_AFFINITY_MASK` where you would use `CUDA_VISIBLE_DEVICES`:
+```bash
+ZE_AFFINITY_MASK=0 python eval/calvin/eval_ckpts.py
+```
+Collectives use `xccl` on XPU (instead of `nccl`). The CALVIN and SimplerEnv simulators and their rendering are not ported and still need their usual setup.
+
 ## VLA Benchmarks Comparison
 The rigorous definition of VLAs is not consistent in different works, we regard fine-tuning pre-trained VLMs as the key factor to identify VLAs in this work.
 

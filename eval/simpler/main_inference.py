@@ -7,6 +7,7 @@ from simpler_env.evaluation.argparse import get_args
 from eval.simpler.env_utlis import DictAction
 from eval.simpler.maniskill2_evaluator import maniskill2_evaluator
 from eval.simpler.model_wrapper import BaseModelInference
+from robovlms.utils.device import default_device_type
 
 import argparse
 
@@ -251,7 +252,7 @@ if __name__ == "__main__":
     model = BaseModelInference(
         ckpt_path=ckpt_path,
         configs=configs,
-        device=torch.device("cuda"),
+        device=torch.device(default_device_type()),
         save_dir=eval_log_dir,
         policy_setup=args.policy_setup,
     )
