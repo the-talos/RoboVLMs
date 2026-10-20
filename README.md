@@ -111,7 +111,7 @@ python eval/simpler/env_test.py
 
 ### How to run the same on Intel's XPU
 
-The policy inference path (`CustomModel` and `BaseTrainer.inference_step`) picks the device automatically: XPU first, then CUDA, then CPU. Skip `conda install cudatoolkit cudatoolkit-dev` and the pinned `torch==2.3.1`, and install the XPU wheels instead:
+The policy inference path (`CustomModel` in `eval/calvin/model_wrapper.py`) picks the device automatically: XPU first, then CUDA, then CPU. Skip `conda install cudatoolkit cudatoolkit-dev` and the pinned `torch==2.3.1`, and install the XPU wheels instead:
 ```bash
 pip install torch torchvision --index-url https://download.pytorch.org/whl/xpu
 pip install --no-deps -e .
